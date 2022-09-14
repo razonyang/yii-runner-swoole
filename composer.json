@@ -1,0 +1,52 @@
+{
+    "name": "razonyang/yii-runner-swoole",
+    "description": "Yii web application runner for Swoole",
+    "type": "library",
+    "license": "BSD-3-Clause",
+    "autoload": {
+        "psr-4": {
+            "RazonYang\\Yii\\Runner\\Swoole\\": "src/",
+            "RazonYang\\Yii\\Runner\\Swoole\\Tests\\": "tests/"
+        }
+    },
+    "authors": [
+        {
+            "name": "razonyang",
+            "email": "razonyang@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "require": {
+        "php": "^8.0",
+        "yiisoft/yii-runner": "^1.2",
+        "yiisoft/yii-http": "^1.0",
+        "nyholm/psr7": "^1.5",
+        "psr/http-message": "^1.0",
+        "yiisoft/yii-runner-http": "^1.1"
+    },
+    "config": {
+        "allow-plugins": {
+            "yiisoft/config": true
+        }
+    },
+    "require-dev": {
+        "swoole/ide-helper": "dev-master",
+        "phpunit/phpunit": "^9.5",
+        "friendsofphp/php-cs-fixer": "^3.11"
+    },
+    "scripts": {
+        "lint": "php-cs-fixer fix --config .php-cs-fixer.php src tests",
+        "test": "phpunit"
+    },
+    "extra": {
+        "config-plugin-options": {
+            "source-directory": "config"
+        },
+        "config-plugin": {
+            "common": "common.php",
+            "params":  "params.php",
+            "bootstrap": "bootstrap.php"
+        }
+    }
+}
