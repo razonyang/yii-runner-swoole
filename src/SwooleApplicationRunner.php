@@ -6,8 +6,9 @@ namespace RazonYang\Yii\Runner\Swoole;
 
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
 use Psr\Log\LoggerInterface;
+use RazonYang\Psr7\Swoole\EmitterFactoryInterface;
+use RazonYang\Psr7\Swoole\ServerRequestFactoryInterface;
 use Swoole\Coroutine\Http\Server;
 use Swoole\Http\Request;
 use Swoole\Http\Response;
@@ -15,10 +16,10 @@ use Swoole\Process;
 use Swoole\Process\Pool;
 use Throwable;
 use Yiisoft\Di\StateResetter;
+use Yiisoft\Http\Method;
 use Yiisoft\Http\Status;
 use Yiisoft\Yii\Http\Application;
 use Yiisoft\Yii\Runner\ApplicationRunner;
-use Yiisoft\Yii\Runner\Http\ServerRequestFactory;
 use Yiisoft\Yii\Runner\RunnerInterface;
 
 final class SwooleApplicationRunner extends ApplicationRunner implements RunnerInterface
@@ -29,7 +30,7 @@ final class SwooleApplicationRunner extends ApplicationRunner implements RunnerI
 
     private ?EmitterFactoryInterface $emitterFactory;
 
-    private ?ServerRequestFactory $serverRequestFactory;
+    private ?ServerRequestFactoryInterface $serverRequestFactory;
 
     private ?ResponseFactoryInterface $responseFactory;
 
@@ -70,7 +71,7 @@ final class SwooleApplicationRunner extends ApplicationRunner implements RunnerI
 
         $this->emitterFactory = $container->get(EmitterFactoryInterface::class);
 
-        $this->serverRequestFactory = $container->get(ServerRequestFactory::class);
+        $this->serverRequestFactory = $container->get(ServerRequestFactoryInterface::class);
 
         $this->responseFactory = $container->get(ResponseFactoryInterface::class);
     }
@@ -113,9 +114,9 @@ final class SwooleApplicationRunner extends ApplicationRunner implements RunnerI
         $psrResponse = null;
         $emitter = $this->emitterFactory->create($response);
         try {
-            $psrRequest = $this->createServerRequest($request);
+            $psrRequest = $this->serverRequestFactory->create($request);
             $psrResponse = $this->application->handle($psrRequest);
-            $emitter->emit($psrResponse);
+            $emitter->emit($psrResponse, $psrRequest->getMethod() === Method::HEAD);
         } catch (Throwable $t) {
             $this->logger->error($t->getMessage());
             $psrResponse = $this->responseFactory->createResponse(Status::INTERNAL_SERVER_ERROR, Status::TEXTS[Status::INTERNAL_SERVER_ERROR]);
@@ -125,29 +126,6 @@ final class SwooleApplicationRunner extends ApplicationRunner implements RunnerI
         }
     }
 
-    private function createServerRequest(Request $request): ServerRequestInterface
-    {
-        $server = array_change_key_case($request->server ?: [], CASE_UPPER);
-        $server['SCRIPT_NAME'] = $this->getScriptName();
-
-        return $this->serverRequestFactory->createFromParameters(
-            $server,
-            $request->header ?: [],
-            $request->cookie ?: [],
-            $request->get ?: [],
-            $request->post ?: [],
-            $request->files ?: [],
-            $request->getContent(),
-        );
-    }
-
-    private function getScriptName(): string
-    {
-        global $argv;
-
-        return $argv[0]??'';
-    }
-
     private function afterRespond(
         ?ResponseInterface $response,
     ): void {
@@ -155,7 +133,7 @@ final class SwooleApplicationRunner extends ApplicationRunner implements RunnerI
         /** @psalm-suppress MixedMethodCall */
         $this->container
             ->get(StateResetter::class)
-            ->reset(); // We should reset the state of such services every request.
+            ->reset();
         gc_collect_cycles();
     }
 }

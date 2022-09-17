@@ -2,8 +2,10 @@
 
 declare(strict_types=1);
 
-use RazonYang\Yii\Runner\Swoole\EmitterFactory;
-use RazonYang\Yii\Runner\Swoole\EmitterFactoryInterface;
+use RazonYang\Psr7\Swoole\EmitterFactory;
+use RazonYang\Psr7\Swoole\EmitterFactoryInterface;
+use RazonYang\Psr7\Swoole\ServerRequestFactory;
+use RazonYang\Psr7\Swoole\ServerRequestFactoryInterface;
 use RazonYang\Yii\Runner\Swoole\PoolFactory;
 use RazonYang\Yii\Runner\Swoole\PoolFactoryInterface;
 use RazonYang\Yii\Runner\Swoole\ServerFactory;
@@ -24,4 +26,7 @@ return [
 
     EmitterFactoryInterface::class => EmitterFactory::class,
     EmitterFactory::class => fn() => new EmitterFactory(),
+
+    ServerRequestFactoryInterface::class => ServerRequestFactory::class,
+    ServerRequestFactory::class => fn() => new ServerRequestFactory(),
 ];

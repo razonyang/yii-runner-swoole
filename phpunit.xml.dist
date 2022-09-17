@@ -25,5 +25,9 @@
         <include>
             <directory>./src</directory>
         </include>
+        <report>
+            <clover outputFile="build/coverage.xml"/>
+            <html outputDirectory="build/coverage"/>
+        </report>
     </coverage>
 </phpunit>

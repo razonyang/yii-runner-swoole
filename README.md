@@ -3,8 +3,7 @@
 [![Latest Stable Version](https://poser.pugx.org/razonyang/yii-runner-swoole/v/stable.png)](https://packagist.org/packages/razonyang/yii-runner-swoole)
 [![Total Downloads](https://poser.pugx.org/razonyang/yii-runner-swoole/downloads.png)](https://packagist.org/packages/razonyang/yii-runner-swoole)
 [![Build Status](https://github.com/razonyang/yii-runner-swoole/workflows/build/badge.svg)](https://github.com/razonyang/yii-runner-swoole/actions)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/razonyang/yii-runner-swoole/badges/quality-score.png?b=main)](https://scrutinizer-ci.com/g/razonyang/yii-runner-swoole/?branch=main)
-[![Code Coverage](https://scrutinizer-ci.com/g/razonyang/yii-runner-swoole/badges/coverage.png?b=main)](https://scrutinizer-ci.com/g/razonyang/yii-runner-swoole/?branch=main)
+[![Coverage Status](https://coveralls.io/repos/github/razonyang/yii-runner-swoole/badge.svg?branch=main)](https://coveralls.io/github/razonyang/yii-runner-swoole?branch=main)
 
 The Swoole adapter for [Yii Runner](https://github.com/yiisoft/yii-runner), built on top of Swoole coroutine.
 
